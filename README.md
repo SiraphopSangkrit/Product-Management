@@ -11,10 +11,8 @@ A full-stack web application for managing products and categories with a modern,
 - [Installation](#-installation)
 - [Usage](#-usage)
 - [API Documentation](#-api-documentation)
-- [Screenshots](#-screenshots)
 - [Validation Rules](#-validation-rules)
-- [Contributing](#-contributing)
-- [License](#-license)
+
 
 ## ✨ Features
 
