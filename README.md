@@ -201,13 +201,6 @@ Before you begin, ensure you have the following installed:
 5. **View Category Details**: Click "View" button to see category analytics
 6. **Search Categories**: Use the search bar to find specific categories
 
-### Category Analytics
-
-- **Total Products**: Number of products in the category
-- **Total Value**: Combined value of all products
-- **Average Price**: Mean price across all products
-- **Stock Status**: Low stock and out-of-stock counts
-
 ## 📚 API Documentation
 
 ### Products Endpoints
