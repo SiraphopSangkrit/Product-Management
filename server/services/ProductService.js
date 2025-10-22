@@ -4,44 +4,49 @@ class ProductService {
 
     async getAllProducts(options = {}) {
         try {
-            const  {
+            const {
                 page = 1,
                 limit = 10,
                 search = '',
                 categoryId = '',
                 sortBy = 'name',
                 order = 'asc',
-              } = options;
+            } = options;
 
-              const skip = (page - 1) * limit;
+            const skip = (page - 1) * limit;
 
-              let query = {};
-               if (search) {
-                query.$text = { $search: search, $options: 'i' };
-              }
+            let query = {};
+            
+           
+            if (search) {
+                query.$or = [
+                    { name: { $regex: search, $options: 'i' } },
+                    { description: { $regex: search, $options: 'i' } }
+                ];
+            }
 
-              if (categoryId) {
-        query.category = categoryId;
-      }
+            if (categoryId) {
+                query.categoryId = categoryId;
+            }
 
-              const sortOptions = {};
-              sortOptions[sortBy] = order === "asc" ? 1 : -1;
+            const sortOptions = {};
+            sortOptions[sortBy] = order === "asc" ? 1 : -1;
 
-              const products = await Product.find(query)
+            const products = await Product.find(query)
                 .populate('categoryId')
                 .sort(sortOptions)
                 .skip(skip)
                 .limit(parseInt(limit));
 
-                const total = await Product.countDocuments(query);
+            const total = await Product.countDocuments(query);
 
             return {
                 products,
                 pagination: {
-                  current: parseInt(page),
-                  pages: Math.ceil(total / limit),
-                  total,
-                  limit: parseInt(limit)
+                    current: parseInt(page),
+                    pages: Math.ceil(total / limit),
+                    total,
+                    limit: parseInt(limit)
                 }
             }
 
@@ -54,9 +59,21 @@ class ProductService {
         try {
             const product = new Product(productData);
             await product.save();
-            return product;
+            return await product.populate('categoryId');
         } catch (error) {
             throw new Error(`Error creating product: ${error.message}`);
+        }
+    }
+
+    async getProductById(productId) {
+        try {
+            const product = await Product.findById(productId).populate('categoryId');
+            if (!product) {
+                throw new Error('Product not found');
+            }
+            return product;
+        } catch (error) {
+            throw new Error(`Error fetching product: ${error.message}`);
         }
     }
 
@@ -66,7 +83,11 @@ class ProductService {
                 productId,
                 productData,
                 { new: true }
-            );
+            ).populate('categoryId');
+            
+            if (!product) {
+                throw new Error('Product not found');
+            }
             return product;
         } catch (error) {
             throw new Error(`Error updating product: ${error.message}`);
@@ -75,7 +96,11 @@ class ProductService {
 
     async deleteProduct(productId) {
         try {
-            await Product.findByIdAndDelete(productId);
+            const product = await Product.findByIdAndDelete(productId);
+            if (!product) {
+                throw new Error('Product not found');
+            }
+            return { message: 'Product deleted successfully' };
         } catch (error) {
             throw new Error(`Error deleting product: ${error.message}`);
         }

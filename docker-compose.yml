@@ -21,24 +21,35 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
+    restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=development
-      - MONGO_URI=mongodb://database:27017/productdb
+      - MONGODB_URI=mongodb://database:27017/productdb
     volumes:
       - ./server:/app
       - /node_modules
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     networks:
       - app-network
   database:
     image: mongo:latest
+    restart: unless-stopped
     ports:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=productdb
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.admin.runCommand('ismaster')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
     networks:
       - app-network
 

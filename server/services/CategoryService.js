@@ -42,6 +42,14 @@ class CategoryService {
       throw new Error(`Failed to fetch categories: ${error.message}`);
     }
   }
+  async getCategoryById(categoryId) {
+    try {
+      const category = await Category.findById(categoryId);
+      return category;
+    } catch (error) {
+      throw new Error("Error fetching category by ID");
+    }
+  }
 
   async createCategory(categoryData) {
     try {

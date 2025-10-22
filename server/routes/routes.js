@@ -3,6 +3,7 @@ const CategoryController = require('../controllers/CategoryController');
 
 router.get('/categories', CategoryController.getAllCategories);
 router.post('/category', CategoryController.createCategory);
+router.get('/category/:id', CategoryController.getCategoryById);
 router.put('/category/:id', CategoryController.updateCategory);
 router.delete('/category/:id', CategoryController.deleteCategory);
 
@@ -10,6 +11,7 @@ const ProductController = require('../controllers/ProductController');
 
 router.get('/products', ProductController.getAllProducts);
 router.post('/product', ProductController.createProduct);
+router.get('/product/:id', ProductController.getProductById);
 router.put('/product/:id', ProductController.updateProduct);
 router.delete('/product/:id', ProductController.deleteProduct);
 
